@@ -3,7 +3,7 @@
 def imperative(xs):
     results = []
     for x in xs:
-        if x > 7: 
+        if x >= 7: 
             break
         if x < 2:
             result = 4 * x
