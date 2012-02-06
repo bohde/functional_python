@@ -110,7 +110,19 @@ def transform_args(func, transformer):
     return lambda *args: func(*transformer(args))
 
 composed_partials = transform_args(compose, partial(starmap, partial))
-pipe = transform_args(composed_partials, reversed)
+
+composed_partials_style = composed_partials(
+    (map, lambda x: 4 * x),
+    (filter, lambda x: x < 2),
+    (takewhile, lambda x: x < 7))
 
 assert composed_partials_style(range(10)) == [0, 4]
+
+pipe = transform_args(composed_partials, reversed)
+
+pipe_style = pipe(
+    (takewhile, lambda x: x < 7),
+    (filter, lambda x: x < 2),
+    (map, lambda x: 4 * x))
+
 assert pipe_style(range(10)) == [0, 4]
