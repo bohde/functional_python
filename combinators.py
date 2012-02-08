@@ -7,23 +7,23 @@ class Combinators(object):
         self._value = value
 
 
-    def K(self, f, *args):
+    def K(self, f, *args, **kwargs):
         """The Kestrel combinator, invokes a method, and returns the original value"""
         if callable(f):
-            f(self._value, *args)
+            f(self._value, *args, **kwargs)
         else:
-            getatttr(self._value, function_name)(*args)
+            getattr(self._value, f)(*args, **kwargs)
         return self._value
     
 
-    def T(self, function, *args):
+    def T(self, function, *args, **kwargs):
         """The Thrush combinator, makes a function call look like a method"""
-        return function(self._value, *args)
+        return function(self._value, *args, **kwargs)
 
 
-    def R(self, function, *args):
+    def R(self, function, *args, **kwargs):
         """The Robin combinator, like the thrust, except appends to the end of the argument list"""
-        return function(*(args + (self._value,)))
+        return function(*(args + (self._value,)), **kwargs)
 
 
     def chain(self):
@@ -35,23 +35,23 @@ class ChainedCombinators(object):
         self._value = value
 
         
-    def K(self, f, *args):
+    def K(self, f, *args, **kwargs):
         """The Kestrel combinator, invokes a method, and returns the original value"""
         if callable(f):
-            f(self._value, *args)
+            f(self._value, *args, **kwargs)
         else:
-            getatttr(self._value, function_name)(*args)
+            getattr(self._value, f)(*args, **kwargs)
         return self
     
 
-    def T(self, function, *args):
+    def T(self, function, *args, **kwargs):
         """The Thrush combinator, makes a function call look like a method"""
-        return ChainedCombinators(function(self._value, *args))
+        return ChainedCombinators(function(self._value, *args, **kwargs))
 
 
-    def R(self, function, *args):
+    def R(self, function, *args, **kwargs):
         """The Robin combinator, like the thrust, except appends to the end of the argument list."""
-        return ChainedCombinators(function(*(args + (self._value,))))
+        return ChainedCombinators(function(*(args + (self._value,)), **kwargs))
 
 
     def value(self):
