@@ -23,15 +23,8 @@ class It(Combinators):
         return next(self.filter(*args, **kwargs))
 
 
-    def all(self, *args, **kwargs):
-        to_check = self.filter(*args, **kwargs) if len(args) else self
-        return self.T(all)
-        
-
-    def any(self, *args, **kwargs):
-        to_check = self.filter(*args, **kwargs) if len(args) else self
-        return self.T(any)
-
+    all = apply('T', all)
+    any = apply('T', any)
 
     def include(self, val):
         return val in self._value
