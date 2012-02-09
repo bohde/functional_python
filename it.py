@@ -11,7 +11,9 @@ class It(Combinators):
     map = apply('R', itertools.imap)
     filter = apply('R', itertools.ifilter)
     reduce = apply('R', reduce)
+
     flatten = apply('T', itertools.chain.from_iterable)
+    flatten_string = apply('T', ''.join)
 
     def reject(self, f, *args, **kwargs):
         return self.filter(lambda n: not(f(n)), *args, **kwargs)
@@ -43,6 +45,17 @@ class It(Combinators):
         return self.map(lambda i: It(i).T(getattr, attr))
 
     
+    max = apply('T', max)
+    min = apply('T', min)
+
+    sort = apply('T', sorted)
+
+    __len__ = apply('T', len)
+    
+
+    list = apply('T', list)
+    set = apply('T', set)
+
     def chain(self):
         return ChainedIt(self._value)
     
