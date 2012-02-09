@@ -1,10 +1,11 @@
 import itertools
-from combinators import Combinators
+from combinators import Combinators, ChainedCombinators
 
 def apply(comb, func):
     def inner(self, *args, **kwargs):
         return getattr(self, comb)(func, *args, **kwargs)
     return inner
+
 
 class It(Combinators):
     map = apply('R', itertools.imap)
@@ -25,6 +26,7 @@ class It(Combinators):
             return all(self.filter(*args, **kwargs))
         return all(self._value)
         
+
     def any(self, *args, **kwargs):
         if len(args):
             return any(self.filter(*args, **kwargs))
@@ -33,6 +35,11 @@ class It(Combinators):
 
     def invoke(self,*args, **kwargs):
         return (i.K(*args, **kwargs) for i in self.map(It))
-    
-        
 
+    
+    def chain(self):
+        return ChainedIt(self._value)
+    
+
+class ChainedIt(ChainedCombinators, It):
+    pass
