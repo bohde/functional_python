@@ -22,19 +22,25 @@ class It(Combinators):
 
 
     def all(self, *args, **kwargs):
-        if len(args):
-            return all(self.filter(*args, **kwargs))
-        return all(self._value)
+        to_check = self.filter(*args, **kwargs) if len(args) else self
+        return self.T(all)
         
 
     def any(self, *args, **kwargs):
-        if len(args):
-            return any(self.filter(*args, **kwargs))
-        return any(self._value)
+        to_check = self.filter(*args, **kwargs) if len(args) else self
+        return self.T(any)
+
+
+    def include(self, val):
+        return val in self._value
         
 
-    def invoke(self,*args, **kwargs):
-        return (i.K(*args, **kwargs) for i in self.map(It))
+    def invoke(self, *args, **kwargs):
+        return self.map(lambda i: It(i).K(*args, **kwargs))
+
+
+    def pluck(self, attr):
+        return self.map(lambda i: It(i).T(getattr, attr))
 
     
     def chain(self):
