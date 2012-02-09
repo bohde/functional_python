@@ -46,12 +46,12 @@ class ChainedCombinators(object):
 
     def T(self, function, *args, **kwargs):
         """The Thrush combinator, makes a function call look like a method"""
-        return ChainedCombinators(function(self._value, *args, **kwargs))
+        return self.__class__(function(self._value, *args, **kwargs))
 
 
     def R(self, function, *args, **kwargs):
         """The Robin combinator, like the thrust, except appends to the end of the argument list."""
-        return ChainedCombinators(function(*(args + (self._value,)), **kwargs))
+        return self.__class__(function(*(args + (self._value,)), **kwargs))
 
 
     def value(self):
