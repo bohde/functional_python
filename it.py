@@ -20,7 +20,7 @@ class It(Combinators):
 
 
     def find(self, *args, **kwargs):
-        return next(self.filter(*args, **kwargs))
+        return next(iter(self.filter(*args, **kwargs)))
 
 
     all = apply('T', all)
@@ -44,14 +44,27 @@ class It(Combinators):
     sort = apply('T', sorted)
 
     __len__ = apply('T', len)
-    
 
     list = apply('T', list)
     set = apply('T', set)
 
     def chain(self):
         return ChainedIt(self._value)
-    
+
+    def __iter__(self):
+        return iter(self._value)
+
+
+def lift(attrname):
+    def wrapped(self, *args, **kwargs):
+        return ChainedIt(getattr(super(ChainedIt, self), attrname)(*args, **kwargs))
+    return wrapped
+        
 
 class ChainedIt(ChainedCombinators, It):
-    pass
+    find = lift('find')
+    include = lift('include')
+    
+    def __iter__(self):
+        return iter(self.value())
+
