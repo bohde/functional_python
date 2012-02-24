@@ -16,8 +16,7 @@ one = lambda f: lambda x: f(x)
 # f needs to be the transistion function between two numbers,
 # the addition of 1, and x needs to be the results of zero applications
 # of f, which is 0
-def unchurch(n):
-    return n(lambda m: m + 1)(0)
+unchurch = lambda n: n(lambda m: m + 1)(0)
 
 # Let's do some sanity testing
 assert unchurch(zero) == 0
