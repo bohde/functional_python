@@ -1,6 +1,7 @@
 import operator as op
 import itertools as it
 from functools import partial
+from collections import deque
 
 class Wrapper(object):
     def __init__(self, data):
@@ -12,25 +13,30 @@ class Wrapper(object):
 
 
 def partition(predicate, iterable):
-    pack = partial(it.imap, lambda i: (predicate(i), i))
+    passing, failing = deque(), deque()
 
-    new_pred = op.itemgetter(0)
-    unpack = partial(it.imap, op.itemgetter(1))
+    def gen(f, mine, other):
+        while True:
+            if mine:
+                yield mine.popleft()
+            else:
+                newval = next(iterable)
+                if f(newval):
+                    yield newval
+                else:
+                    other.append(newval)
 
-    packed = pack(iterable)
-    first, second = it.tee(packed)
-
-    passing = it.ifilter(new_pred, first)
-    failing = it.ifilterfalse(new_pred, second)
-
-    return map(unpack, (passing, failing))
-
+    return (
+        gen(predicate, passing, failing),
+        gen(lambda i: not(predicate(i)), failing, passing)
+    )
+                    
 
 def isorted(xs):
     xs = iter(xs)
     pivot = next(xs)
 
-    below, above = partition(lambda y: y < pivot, i)
+    below, above = partition(lambda y: y < pivot, xs)
 
     for x in isorted(below):
         yield x
